@@ -1,7 +1,12 @@
 import pika
 import os
 import sys
-devHost='10.0.2.2'
+import ssl
+from pika.credentials import ExternalCredentials
+
+
+amqp_host= 'ampqs:amqp.brender.cn'
+# amqp_host= '182.92.200.86'
 args = sys.argv[1:]
 
 scriptpath = "./"
@@ -16,9 +21,94 @@ def start():
 
 name = args[0]
 
+ssl_options = {    
+    "ca_certs":"./ssl/cacert.pem",
+    "certfile": "./ssl/client/rabbit-client.cert.pem",
+    "keyfile": "./ssl/client/rabbit-client.key.pem",
+    "cert_reqs": ssl.CERT_REQUIRED,
+    "ssl_version":ssl.PROTOCOL_TLSv1_2
+}
+
+def connect():
+    # credentials = pika.PlainCredentials('test', 'test')
+    # parameters = pika.ConnectionParameters(host=amqp_host,
+    #                                        port=5671,
+    #                                        virtual_host='/',
+    #                                        heartbeat_interval = 30,
+    #                                        credentials=credentials,
+    #                                        ssl = True,
+    #                                        ssl_options = ssl_options)
+    # connection = pika.BlockingConnection(parameters)
+    # print(connection)
+    # connection.close()
+
+
+
+    # context = ssl.create_default_context(cafile="./ssl/cacert.pem")
+    # context.load_cert_chain(certfile="./ssl/client/rabbit-client.cert.pem",keyfile="./ssl/client/rabbit-client.key.pem",password="PLE427VKgNSpqEXN")
+    # ssl_options = pika.SSLOptions(context, amqp_host)
+    # conn_params = pika.ConnectionParameters(port=5671,ssl_options=ssl_options)
+
+    # with pika.BlockingConnection(conn_params) as conn:
+    #     ch = conn.channel()
+    #     ch.queue_declare("hello")
+    #     ch.basic_publish("", "hello", "Hello, world!")
+    #     print(ch.basic_get("hello"))
+
+
+
+
+    context = ssl.create_default_context(cafile="./ssl/cacert.pem")
+
+    # I know it's much better to use another certificate but sometimes there is no choise:
+    # I know it's very rude solution. Use it as start point
+
+    context.set_ciphers('ALL:@SECLEVEL=0') # 
+
+    context.load_cert_chain(certfile="./ssl/client/rabbit-client.cert.pem",keyfile="./ssl/client/rabbit-client.key.pem",password="PLE427VKgNSpqEXN")
+    # context.set_ciphers('ALL:@SECLEVEL=0')
+
+    ssl_options = pika.SSLOptions(context, amqp_host)
+    conn_params = pika.ConnectionParameters(host=amqp_host,
+                                            port=5671,
+                                            # virtual_host="/",
+                                            ssl_options=ssl_options,
+                                            credentials=ExternalCredentials())
+
+
+
+    with pika.BlockingConnection(conn_params) as conn:
+         ch = conn.channel()
+         ch.queue_declare("hello")
+         ch.basic_publish("", "hello", "Hello, world from python!")
+         print(ch.basic_get("hello"))
+
+
+
+    # cp = pika.ConnectionParameters(amqp_host, 5671, '/',
+    #                                 ssl=True,
+    #                                 ssl_options=dict(
+    #                                     ssl_version=ssl.PROTOCOL_TLSv1,
+    #                                     ca_certs="./ssl/cacert.pem",
+    #                                     keyfile="./ssl/client/rabbit-client.key.pem",
+    #                                     certfile="./ssl/client/rabbit-client.cert.pem",
+    #                                     cert_reqs=ssl.CERT_REQUIRED)
+    #                                 )
+
+
+    # with pika.BlockingConnection(cp) as conn:
+    #      ch = conn.channel()
+    #      ch.queue_declare("hello")
+    #      ch.basic_publish("", "hello", "Hello, world from python!")
+    #      print(ch.basic_get("hello"))
+
+
+connect()
+
+
 def send(name):
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=devHost))
+        pika.ConnectionParameters(host=amqp_host))
     channel = connection.channel()
 
     channel.queue_declare(queue='hello')
@@ -32,7 +122,7 @@ def send(name):
 
 def recv():
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=devHost))
+        pika.ConnectionParameters(host=amqp_host))
     channel = connection.channel()
 
     channel.queue_declare(queue='hello')
@@ -57,6 +147,3 @@ def recv():
     channel.start_consuming()
 
 
-send(name)
-
-recv()
