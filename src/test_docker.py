@@ -1,4 +1,4 @@
 import docker
 client = docker.from_env()
-# client.containers.run("alpine", ["echo", "hello", "world"])
-client.info()
+client.containers.run("alpine", ["echo", "hello", "world"])
+# print(client.info())
