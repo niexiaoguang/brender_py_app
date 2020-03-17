@@ -1,4 +1,6 @@
 import docker
-client = docker.from_env()
-client.containers.run("alpine", ["echo", "hello", "world"])
-# print(client.info())
+# client = docker.from_env()
+client = docker.DockerClient(base_url='unix://var/run/docker.sock')
+
+# client.containers.run("alpine", ["echo", "hello", "world"])
+print(client.containers.list())   
