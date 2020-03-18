@@ -2,8 +2,6 @@ FROM python:3.7-slim
 
 MAINTAINER Pampa Nie "nxg@lohosoft.com"
 
-
-
 ARG USER_ID
 ARG GROUP_ID
 
