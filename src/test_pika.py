@@ -13,11 +13,11 @@ from pika.credentials import ExternalCredentials
 # connection.close()
 
 
-context = ssl.create_default_context(cafile="./ssl/cacert.pem")
+context = ssl.create_default_context(cafile="./ssl/amqps/cacert.pem")
 context.set_ciphers('ALL:@SECLEVEL=0') # 
 
-context.load_cert_chain(certfile="./ssl/brender-client.cert.pem",
-                        keyfile="./ssl/brender-client.key.pem",
+context.load_cert_chain(certfile="./ssl/amqps/brender-client.cert.pem",
+                        keyfile="./ssl/amqps/brender-client.key.pem",
                         password="dMokP0brnSeGsphGCfsH41Yr2cwDLauB")
 
 credentials = pika.PlainCredentials('guest', 'guest')
