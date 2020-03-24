@@ -2,11 +2,20 @@ FROM python:3.7-slim-stretch
 
 MAINTAINER Pampa Nie "nxg@lohosoft.com"
 
+# for pyinstaller 
+RUN rm /etc/apt/sources.list
+COPY ./sources.list /etc/apt
+RUN apt-get update
+RUN apt-get install -y libc-bin binutils
+
+
 # install pyinstaller
 RUN pip install pyinstaller -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 
 # leave pycrypto for now
 # RUN pip install pycrypto -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
+
+
 
 ARG USER_ID
 ARG GROUP_ID
@@ -33,6 +42,8 @@ RUN chown -R $USER_ID:$GROUP_ID /usr/app
 
 # Switch to user
 USER $USER_ID
+
+
 
 # Open the mapped port
 #EXPOSE 3000
