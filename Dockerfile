@@ -2,7 +2,11 @@ FROM python:3.7-slim-stretch
 
 MAINTAINER Pampa Nie "nxg@lohosoft.com"
 
+# install pyinstaller
+RUN pip install pyinstaller -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 
+# leave pycrypto for now
+# RUN pip install pycrypto -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 
 ARG USER_ID
 ARG GROUP_ID
