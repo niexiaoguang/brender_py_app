@@ -52,5 +52,5 @@ def add_bg_proce(name=None, process_type='',
 
 
 
-readthread = threading.Thread(target=threadread, args=([None]), daemon=False)
-readthread.start()
+# readthread = threading.Thread(target=threadread, args=([None]), daemon=False)
+# readthread.start()
