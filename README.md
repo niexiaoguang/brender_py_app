@@ -9,4 +9,4 @@ docker build -t brender_render_node_py_dev_slim --build-arg USER_ID=$(id -u) --b
 
 dev run : 
 
-docker run --rm -u $(id -u):$(id -g) -it -p 5678:5678 -v $(pwd):/usr/app brender_render_node_py_dev_slim bash
+docker run --rm -u $(id -u):$(id -g) -it --expose 5671 -v $(pwd):/usr/app brender_render_node_py_dev_slim bash
