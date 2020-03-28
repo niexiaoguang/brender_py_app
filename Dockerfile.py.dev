@@ -27,6 +27,9 @@ COPY . /usr/app
 
 WORKDIR /usr/app
 
+# mark for update
+RUN echo "20200327" >> /dev/null
+
 # install with local servers
 RUN pip3 install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
 # RUN pip3 install -r requirements.txt
