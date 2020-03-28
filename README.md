@@ -8,5 +8,5 @@ docker build -t brender_render_node_py_dev_slim --build-arg USER_ID=$(id -u) --b
 
 
 dev run : 
-
-docker run --rm -u $(id -u):$(id -g) -it --expose 5671 -v $(pwd):/usr/app brender_render_node_py_dev_slim bash
+for ftp and amqp
+docker run --rm -u $(id -u):$(id -g) -it --expose 5671 --expose 22121 -v $(pwd):/usr/app brender_render_node_py_dev_slim bash
