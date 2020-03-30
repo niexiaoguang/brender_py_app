@@ -30,13 +30,13 @@ def conn():
     print('start connecting')
     ftp = FTP()
 
-    ftp.connect('ftp.brender.cn',22121)
+    ftp.connect('192.168.1.123',22123)
     ftp.login('user','12345')
     print(ftp.getwelcome())
 
-    # files = []
-    # ftp.dir(files.append)
-    # print(files)
+    files = []
+    ftp.dir(files.append)
+    print(files)
     # with ftplib.FTP('182.92.200.86',22121) as ftp:
     #     print('connecting')
     #     try:
