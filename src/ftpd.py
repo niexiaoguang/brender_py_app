@@ -10,8 +10,8 @@ def main():
 
     # Define a new user having full r/w permissions and a read-only
     # anonymous user
-    authorizer.add_user('user', '12345', './ftpdata', perm='elradfmwMT')
-    authorizer.add_anonymous(os.getcwd())
+    authorizer.add_user('user', '12345', '/usr/app/data', perm='elradfmwMT')
+    # authorizer.add_anonymous(os.getcwd())
 
     # Instantiate FTP handler class
     handler = FTPHandler
@@ -22,12 +22,14 @@ def main():
 
     # Specify a masquerade address and the range of ports to use for
     # passive connections.  Decomment in case you're behind a NAT.
-    #handler.masquerade_address = '151.25.42.11'
-    #handler.passive_ports = range(60000, 65535)
+    handler.permit_foreign_addresses = True
+
+    handler.masquerade_address = '182.92.200.86'
+    handler.passive_ports = range(60000, 65535)
 
     # Instantiate FTP server class and listen on 0.0.0.0:22121
-    # address = ('172.19.0.1', 22122)
-    address = ('0.0.0.0', 22121)
+    # address = ('172.19.0.1', 22123)
+    address = ('0.0.0.0', 22123)  # not use docker for dev
     server = FTPServer(address, handler)
 
     # set a limit for connections
