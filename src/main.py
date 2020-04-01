@@ -1,7 +1,9 @@
 import time
 import pika
 import ssl
-import qiniu
+from qiniu import etag
+import pathlib
+from pathlib import Path
 from pika.credentials import ExternalCredentials
 import requests
 import logging
@@ -29,6 +31,11 @@ if _dev:
     _host = 'amqps.brender.cn'
     _port = 5671
 
+def get_file_hash(filepath):
+    if Path(filepath).if_file():
+        return etag(filepath)
+    else:
+        return None
 
 def download_steam(url,savepath,chunk=2048):
     r = requests.get(url, stream=True)
