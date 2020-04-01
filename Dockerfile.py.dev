@@ -29,7 +29,11 @@ WORKDIR /usr/app
 
 # install with local servers
 RUN pip3 install -r requirements.txt -i http://mirrors.aliyun.com/pypi/simple/ --trusted-host mirrors.aliyun.com
-# RUN pip3 install -r requirements.txt
+
+#RUN pip3 install -r requirements.txt -i http://pypi.mirrors.ustc.edu.cn/simple/ --trusted-host pypi.mirrors.ustc.edu.cn
+
+
+#RUN pip3 install -r requirements.txt
 
 # Create a user group 
 RUN groupadd $GROUP_ID
