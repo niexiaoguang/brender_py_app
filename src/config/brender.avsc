@@ -1,0 +1,10 @@
+{
+    "namespace": "brender.avro",
+     "type": "record",
+     "name": "download",
+     "fields": [
+         {"name": "action", "type": "int"},
+         {"name": "hash",  "type": "string"},
+         {"name": "filepath", "type": "string"}
+     ]
+}
