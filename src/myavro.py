@@ -10,6 +10,9 @@ import avro.io
 # mayby installer need it ? TODO
 # import json
 
+import logging
+logging.basicConfig(level=logging.DEBUG,
+                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
 test_schema = '''
 {
