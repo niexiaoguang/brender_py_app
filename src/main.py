@@ -16,7 +16,7 @@ import myavro
 import myutils
 
 if(len(sys.argv) > 6):
-    _downloadTaskQueueName = sys.argv[1]
+    _fileHandlerQueueName = sys.argv[1]
     _user = sys.argv[2]
     _passwd = sys.argv[3]
     _host = sys.argv[4]
@@ -24,7 +24,7 @@ if(len(sys.argv) > 6):
 
 _dev = True
 if _dev:
-    _downloadTaskQueueName = 'files_handle_req'
+    _fileHandlerQueueName = 'files_handle_req'
     _user = 'pata'
     _passwd = '8888'
     _host = 'amqps.brender.cn'
@@ -103,8 +103,8 @@ def run(queue,callback):
 
 def prepare():
     # TODO init works not yet
-    # run(_downloadTaskQueueName,callback)
-    run(_downloadTaskQueueName,callback)
+    # run(_fileHandlerQueueName,callback)
+    run(_fileHandlerQueueName,callback)
 
 
 def main():
