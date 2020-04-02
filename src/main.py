@@ -34,8 +34,16 @@ if _dev:
 def hanlde_download(filepath):
     pass
 
-def handle_file_hash(filepath):
-    pass
+def handle_file_hash(msg):
+        filePath = msg[myavro.SchemaNameConst.FilePath]
+        fileHash = myqiniu.get_file_hash(filePath)
+        data = {
+            myavro.SchemaNameConst.Code:myavro.Code.FileHash,
+            myavro.SchemaNameConst.FileHash:fileHash
+            }
+        res = myavro.encode(code,data)
+        return res
+
 
 def hanlde_upload(filepath):
     pass
@@ -44,24 +52,22 @@ def hanlde_upload(filepath):
 def handle(msgbody):
     res = None
     msg = myavro.decode_byte_body(msgbody)
-    feedbackQueue = msg['queue']
-    code = msg['code']
-    uuid = msg['uuid']
-    fuid = msg['fuid']
-    path = msg['path']
-    if code == myprotocol.FileHash:
-        fileHash = myqiniu.get_file_hash(path)
-        res = myavro.encode(code,fileHash)
-    elif code == myprotocol.Download:
+
+    code = msg[myavro.SchemaNameConst.Code]
+    replyQueueName = msg[myavro.SchemaNameConst.ReQueueName]
+
+    if code == myavro.Code.FileHash:
+        res = handle_file_hash(code,msgbody)
+    elif code == myavro.Code.Download:
         pass
-    elif code == myprotocol.Upload:
+    elif code == myavro.Code.Upload:
         pass
     else:
         # default
         pass
 
 
-    return res,feedbackQueue
+    return res,replyQueueName
 
 
 def callback(ch, method, properties, body):
@@ -69,13 +75,13 @@ def callback(ch, method, properties, body):
 
     savepath = get_save_file_path(body)
     url = get_url(body)
-    feedbackQueue = get_feedback_queue(body)
+    replyQueueName = get_feedback_queue(body)
     download_steam(url,savepath)
 
-    res,feedbackQueue = handle(body)
+    res,replyQueueName = handle(body)
     # switch handle according msg
     
-    mypika.publish_msg(feedbackQueue,res)
+    mypika.publish_msg(replyQueueName,res)
     # ack and into linster loop
     ch.basic_ack(delivery_tag=method.delivery_tag)
 

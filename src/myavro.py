@@ -14,8 +14,16 @@ import logging
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
-import myprotocol
 
+class Code():
+    FileHash = 0
+    Download = 1
+    Upload = 2
+
+
+class Status():
+    success = 200
+    error = 400
 
 # schema will updating by dev and copy to client TODO
 class Schema():
@@ -55,22 +63,29 @@ class SchemaNameConst():
     FileHanlderRes = 'fr'
 
 
-def encode_byte(reqSchema):
-    schema = avro.schema.Parse(reqSchema)
+def encode_byte_body(code,data):
+
+    schema = None
+    if code == Code.FileHash:
+        schema = avro.schema.Parse(Schema.file_handler_schema_result)
+    elif code == Code.Download:
+        schema = avro.schema.Parse(Schema.file_handler_schema_result)
+    elif code == Code.Upload:
+        schema = avro.schema.Parse(Schema.file_handler_schema_result)
+    else:
+        pass
+
     writer = avro.io.DatumWriter(schema)
 
     bytes_writer = io.BytesIO()
     encoder = avro.io.BinaryEncoder(bytes_writer)
-    writer.write({"sname": "Alyssa", "favorite_number": 256}, encoder)
-    writer.write({"sname": "Ben", "favorite_number": 7, "favorite_color": "red"}, encoder)
+
+    # writer.write({"sname": "Alyssa", "favorite_number": 256}, encoder)
+    writer.write(data,encoder)
 
     raw_bytes = bytes_writer.getvalue()
     return raw_bytes
 
-
-def encode_byte_body(code,data):
-    res = None
-    return res
 
 
 def decode_byte_body(raw_bytes):
