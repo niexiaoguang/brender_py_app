@@ -6,3 +6,9 @@ def get_url(data):
 
 def get_feedback_queue(data):
     pass
+
+
+class Code():
+    FileHash = 0
+    Download = 1
+    Upload = 2

@@ -14,36 +14,41 @@ import logging
 logging.basicConfig(level=logging.DEBUG,
                     format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
-test_schema = '''
-{
-"namespace": "example.avro",
- "type": "record",
- "name": "User",
- "fields": [
-     {"name": "sname", "type": "string"},
-     {"name": "favorite_number",  "type": ["int", "null"]},
-     {"name": "favorite_color", "type": ["string", "null"]}
- ]
-}
-'''
+import myprotocol
 
-schema = avro.schema.Parse(test_schema)
-writer = avro.io.DatumWriter(schema)
+class Schema():
+    file_handler_schema = '''
+    {
+    "namespace": "brender.avro",
+    "type": "record",
+    "name": "User",
+    "fields": [
+        {"name": "sname", "type": "string"},
+        {"name": "favorite_number",  "type": ["int", "null"]},
+        {"name": "favorite_color", "type": ["string", "null"]}
+        ]
+    }
+    '''
 
-bytes_writer = io.BytesIO()
-encoder = avro.io.BinaryEncoder(bytes_writer)
-writer.write({"sname": "Alyssa", "favorite_number": 256}, encoder)
-writer.write({"sname": "Ben", "favorite_number": 7, "favorite_color": "red"}, encoder)
+def encode_byte():
+    schema = avro.schema.Parse(file_handler_schema)
+    writer = avro.io.DatumWriter(schema)
 
-raw_bytes = bytes_writer.getvalue()
-print(len(raw_bytes))
-print(type(raw_bytes))
+    bytes_writer = io.BytesIO()
+    encoder = avro.io.BinaryEncoder(bytes_writer)
+    writer.write({"sname": "Alyssa", "favorite_number": 256}, encoder)
+    writer.write({"sname": "Ben", "favorite_number": 7, "favorite_color": "red"}, encoder)
 
-bytes_reader = io.BytesIO(raw_bytes)
-decoder = avro.io.BinaryDecoder(bytes_reader)
-reader = avro.io.DatumReader(schema)
-user1 = reader.read(decoder)
-user2 = reader.read(decoder)
+    raw_bytes = bytes_writer.getvalue()
+    return raw_bytes
 
-print(user2['sname'])
-print(type(user1['favorite_number']))
+
+def encode(code,data):
+
+def decode_byte_body(raw_bytes):
+
+    bytes_reader = io.BytesIO(raw_bytes)
+    decoder = avro.io.BinaryDecoder(bytes_reader)
+    reader = avro.io.DatumReader(schema)
+    res = reader.read(decoder)
+    return res
