@@ -12,3 +12,8 @@ class Code():
     FileHash = 0
     Download = 1
     Upload = 2
+
+
+class Status():
+    success = 200
+    error = 400

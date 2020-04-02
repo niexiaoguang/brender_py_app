@@ -16,22 +16,47 @@ logging.basicConfig(level=logging.DEBUG,
 
 import myprotocol
 
+
+# schema will updating by dev and copy to client TODO
 class Schema():
-    file_handler_schema = '''
+    file_handler_schema_req = '''
     {
     "namespace": "brender.avro",
     "type": "record",
-    "name": "User",
+    "name": "fq",
     "fields": [
-        {"name": "sname", "type": "string"},
-        {"name": "favorite_number",  "type": ["int", "null"]},
-        {"name": "favorite_color", "type": ["string", "null"]}
+        {"name": "code", "type": "int"},
+        {"name": "pa",  "type": "string"},
+        {"name": "re", "type": "string"}
         ]
     }
     '''
 
-def encode_byte():
-    schema = avro.schema.Parse(file_handler_schema)
+    file_handler_schema_result = '''
+    {
+    "namespace": "brender.avro",
+    "type": "record",
+    "name": "fr",
+    "fields": [
+        {"name": "code", "type": "int"},
+        {"name": "ha",  "type": "string"},
+        {"name": "st", "type": "ini"}
+        ]
+    }
+
+    '''
+class SchemaNameConst():
+    FilePath = 'pa'
+    FileHash = 'ha'
+    Code = 'code'
+    ReQueueName = 're'
+    Status = 'st'
+    FileHandlerReq = 'fq'
+    FileHanlderRes = 'fr'
+
+
+def encode_byte(reqSchema):
+    schema = avro.schema.Parse(reqSchema)
     writer = avro.io.DatumWriter(schema)
 
     bytes_writer = io.BytesIO()
@@ -43,7 +68,10 @@ def encode_byte():
     return raw_bytes
 
 
-def encode(code,data):
+def encode_byte_body(code,data):
+    res = None
+    return res
+
 
 def decode_byte_body(raw_bytes):
 
