@@ -1,6 +1,6 @@
 import sys
 import logging
-logging.basicConfig(level=logging.DEBUG,
+logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
    
@@ -14,6 +14,7 @@ logging.basicConfig(level=logging.DEBUG,
 import mypika
 import myavro
 import myutils
+import myqiniu
 
 if(len(sys.argv) > 6):
     _fileHandlerQueueName = sys.argv[1]
@@ -35,13 +36,15 @@ def hanlde_download(filepath):
     pass
 
 def handle_file_hash(msg):
-        filePath = msg[myavro.SchemaNameConst.FilePath]
+        filePath = msg[myavro.SchemaNameConst.Data]
         fileHash = myqiniu.get_file_hash(filePath)
         data = {
             myavro.SchemaNameConst.Code:myavro.Code.FileHash,
-            myavro.SchemaNameConst.FileHash:fileHash
+            myavro.SchemaNameConst.Data:fileHash,
+            myavro.SchemaNameConst.Status:200,
+            myavro.SchemaNameConst.Sender:'brender_files_handler' #mayby use unique name TODO
             }
-        res = myavro.encode(code,data)
+        res = myavro.encode_byte_body(data)
         return res
 
 
@@ -54,10 +57,10 @@ def handle(msgbody):
     msg = myavro.decode_byte_body(msgbody)
 
     code = msg[myavro.SchemaNameConst.Code]
-    replyQueueName = msg[myavro.SchemaNameConst.ReQueueName]
+    replyQueueName = msg[myavro.SchemaNameConst.Sender]
 
     if code == myavro.Code.FileHash:
-        res = handle_file_hash(code,msgbody)
+        res = handle_file_hash(msg)
     elif code == myavro.Code.Download:
         pass
     elif code == myavro.Code.Upload:
@@ -73,15 +76,10 @@ def handle(msgbody):
 def callback(ch, method, properties, body):
     logging.info(" [x] Received %r" % body)
 
-    savepath = get_save_file_path(body)
-    url = get_url(body)
-    replyQueueName = get_feedback_queue(body)
-    download_steam(url,savepath)
-
     res,replyQueueName = handle(body)
     # switch handle according msg
     
-    mypika.publish_msg(replyQueueName,res)
+    mypika.publish_msg(replyQueueName,res,_user,_passwd,_host,_port)
     # ack and into linster loop
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
@@ -109,7 +107,7 @@ def prepare():
 
 def main():
     # TODO handle args
-    logging.info('start with args : ')
+    print('start with args : ')
     prepare()
 
 if __name__ == "__main__":

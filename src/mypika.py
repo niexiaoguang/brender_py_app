@@ -2,9 +2,6 @@ import pika
 import ssl
 from pika.credentials import ExternalCredentials
 
-import logging
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
 
 def make_conn_params(user,passwd,host,port):
@@ -30,8 +27,8 @@ def make_conn_params(user,passwd,host,port):
 
 
 
-def publish_msg(queue,msg):
-    conn_params = make_conn_params(_user,_passwd,_host,_port)
+def publish_msg(queue,msg,user,passwd,host,port):
+    conn_params = make_conn_params(user,passwd,host,port)
     with pika.BlockingConnection(conn_params) as conn:
         ch = conn.channel()
         # ch.queue_declare("task_queue")

@@ -10,9 +10,15 @@ import avro.io
 # mayby installer need it ? TODO
 # import json
 
-import logging
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
+# import logging
+# logging.basicConfig(level=logging.DEBUG,
+#                     format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
+
+class SchemaNameConst():
+    Code = 'code'
+    Data = 'data'
+    Status = 'status'
+    Sender = 'sender'
 
 
 class Code():
@@ -27,53 +33,23 @@ class Status():
 
 # schema will updating by dev and copy to client TODO
 class Schema():
-    file_handler_schema_req = '''
+    file_handler_schema = '''
     {
     "namespace": "brender.avro",
     "type": "record",
-    "name": "fq",
+    "name": "file_handler",
     "fields": [
         {"name": "code", "type": "int"},
-        {"name": "pa",  "type": "string"},
-        {"name": "re", "type": "string"}
+        {"name": "data",  "type": "string"},
+        {"name": "status", "type": "int"},
+        {"name": "sender", "type": "string"}
         ]
     }
     '''
 
-    file_handler_schema_result = '''
-    {
-    "namespace": "brender.avro",
-    "type": "record",
-    "name": "fr",
-    "fields": [
-        {"name": "code", "type": "int"},
-        {"name": "ha",  "type": "string"},
-        {"name": "st", "type": "int"}
-        ]
-    }
 
-    '''
-class SchemaNameConst():
-    FilePath = 'pa'
-    FileHash = 'ha'
-    Code = 'code'
-    ReQueueName = 're'
-    Status = 'st'
-    FileHandlerReq = 'fq'
-    FileHanlderRes = 'fr'
-
-
-def encode_byte_body(code,data):
-
-    schema = None
-    if code == Code.FileHash:
-        schema = avro.schema.Parse(Schema.file_handler_schema_result)
-    elif code == Code.Download:
-        schema = avro.schema.Parse(Schema.file_handler_schema_result)
-    elif code == Code.Upload:
-        schema = avro.schema.Parse(Schema.file_handler_schema_result)
-    else:
-        pass
+def encode_byte_body(data):
+    schema = avro.schema.Parse(Schema.file_handler_schema)
 
     writer = avro.io.DatumWriter(schema)
 
@@ -89,7 +65,7 @@ def encode_byte_body(code,data):
 
 
 def decode_byte_body(raw_bytes):
-
+    schema = avro.schema.Parse(Schema.file_handler_schema)
     bytes_reader = io.BytesIO(raw_bytes)
     decoder = avro.io.BinaryDecoder(bytes_reader)
     reader = avro.io.DatumReader(schema)

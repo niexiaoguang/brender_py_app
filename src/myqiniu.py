@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.DEBUG,
 
 
 def get_file_hash(filepath):
-    if Path(filepath).if_file():
+    if Path(filepath).is_file():
         return etag(filepath)
     else:
-        return None
+        return 'None'

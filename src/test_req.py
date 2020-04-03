@@ -1,9 +1,5 @@
 import sys
-import logging
-logging.basicConfig(level=logging.DEBUG,
-                    format='%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s')
 
-   
 # logging.info('this is a logging info message')
 # logging.debug('this is a logging debug message')
 # logging.warning('this is logging a warning message')
@@ -38,16 +34,18 @@ testFilePath = './data/download_task.avsc'
 
 msg = {
         myavro.SchemaNameConst.Code:myavro.Code.FileHash,
-        myavro.SchemaNameConst.FilePath:testFilePath,
-        myavro.SchemaNameConst.ReQueueName:recvQueueName
-        }
-byte_msg = myavro.encode_byte_body(myavro.Code.FileHash,msg)
+        myavro.SchemaNameConst.Data:testFilePath,
+        myavro.SchemaNameConst.Sender:recvQueueName,
+        myavro.SchemaNameConst.Status:0}
 
-mypika.publish_msg(_fileHandlerQueueName,byte_msg)
+
+byte_msg = myavro.encode_byte_body(msg)
+
+mypika.publish_msg(_fileHandlerQueueName,byte_msg,_user,_passwd,_host,_port)
 
 
 def callback(ch, method, properties, body):
-    logging.info(" [x] Received %r" % body)
+    print(" [x] Received %r" % body)
     ch.basic_ack(delivery_tag=method.delivery_tag)
 
 
@@ -55,7 +53,7 @@ def callback(ch, method, properties, body):
 
 
 def run(queue,callback):
-    logging.info('consumer got queue name is ' + queue)
+    print('consumer got queue name is ' + queue)
 
     channel = mypika.create_channel(_user,_passwd,_host,_port)
     channel.queue_declare(queue=queue, durable=True)
@@ -65,4 +63,4 @@ def run(queue,callback):
     channel.basic_consume(queue=queue, on_message_callback=callback)
     channel.start_consuming()
 
-run(_fileHandlerQueueName,callback)
+run('recv',callback)
