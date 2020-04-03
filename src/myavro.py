@@ -48,7 +48,7 @@ class Schema():
     "fields": [
         {"name": "code", "type": "int"},
         {"name": "ha",  "type": "string"},
-        {"name": "st", "type": "ini"}
+        {"name": "st", "type": "int"}
         ]
     }
 

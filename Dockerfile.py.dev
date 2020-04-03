@@ -47,8 +47,6 @@ RUN chown -R $USER_ID:$GROUP_ID /usr/app
 # Switch to user
 USER $USER_ID
 
-
-
 # Open the mapped port
 #EXPOSE 3000
 
